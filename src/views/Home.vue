@@ -1,12 +1,14 @@
 <template>
   <div class="home">
-    <div>
+    <div class="home__switchButton">
       <button @click="switchList">{{ currentTitle }}</button>
     </div>
     <div v-if="notSearched" class="home__notSearched">
       上の検索欄から検索してください！
     </div>
-    <div v-else-if="isEmpty" class="home__loading" />
+    <div v-else-if="isEmpty" class="home__isEmpty">
+      検索結果がありません
+    </div>
     <div v-else class="home__container">
       <table class="home__table">
         <thead>
@@ -66,9 +68,9 @@ export default class Home extends Vue {
 
   favorite(event: any, movie: Movie) {
     if (this.isFavorited(movie)) {
-      this.store.commit("movie/removeFavorite", movie);
+      this.store.commit("favorite/removeFavorite", movie);
     } else {
-      this.store.commit("movie/addFavorite", movie);
+      this.store.commit("favorite/addFavorite", movie);
     }
     event.stopPropagation();
   }
@@ -108,11 +110,11 @@ export default class Home extends Vue {
   }
 
   get notSearched(): boolean {
-    return this.currentPage == null;
+    return this.currentPage == null && !this.isFavoirteList;
   }
 
   get isEmpty(): boolean {
-    return this.totalPages == 0 && this.currentPage == 1;
+    return this.totalPages == 0 && this.currentPage == 1 && !this.isFavoirteList;
   }
 
   get showPrev(): boolean {
@@ -123,16 +125,12 @@ export default class Home extends Vue {
     return this.currentPage != this.totalPages;
   }
 
-  get favoriteMovies(): Movie[] {
-    return this.store.state.movie.favoriteMovies;
-  }
-
   get movies(): Movie[] {
     return this.store.state.movie.movies;
   }
 
-  get selectedMovie(): Movie | null {
-    return this.store.state.movie.selectedMovie;
+  get favoriteMovies(): Movie[] {
+    return this.store.state.favorite.favoriteMovies;
   }
 
   get currentPage(): number | null {
@@ -147,6 +145,10 @@ export default class Home extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.home__switchButton {
+  margin-bottom: 20px;
+}
+
 .home__table {
   margin: 0 auto;
 }

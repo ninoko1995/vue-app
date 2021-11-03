@@ -7,7 +7,6 @@ export class MovieState {
   query: String = ""
   currentPage: number | null = null;
   totalPages: number | null = null;
-  favoriteMovies: Movie[] = [];
   movies: Movie[] = [];
   selectedMovie: DetailedMovie | null = null;
 }
@@ -17,7 +16,6 @@ const mutations: MutationTree<MovieState> = {
     state.query = "";
     state.currentPage = null;
     state.totalPages = null;
-    state.favoriteMovies = [];
     state.movies = [];
     state.selectedMovie = null;
   },
@@ -34,32 +32,12 @@ const mutations: MutationTree<MovieState> = {
     state.totalPages = totalPages;
   },
 
-  setFavoriteMovieIds(state: MovieState, movies: Movie[]) {
-    state.favoriteMovies = movies;
-  },
-
   setMovies(state: MovieState, movies: Movie[]) {
     state.movies = movies;
   },
 
   setSelectedMovie(state: MovieState, movie: DetailedMovie) {
     state.selectedMovie = movie;
-  },
-
-  addFavorite(state: MovieState, movie: Movie) {
-    for (let i = 0; i < state.favoriteMovies.length; i++) {
-      const fav = state.favoriteMovies[i];
-      if (fav.id === movie.id) {
-        return;
-      }
-    }
-    state.favoriteMovies.unshift(movie);
-  },
-  
-  removeFavorite(state: MovieState, movie: Movie) {
-    state.favoriteMovies = state.favoriteMovies.filter(fav => {
-      return fav.id != movie.id;
-    });
   },
 };
 
