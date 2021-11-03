@@ -1,7 +1,7 @@
 import { MutationTree, ActionTree } from "vuex";
 import { RootState } from "../../store/";
 import { Movie, DetailedMovie } from "../../models/Movie";
-import { SearchMovieResponse, MovieDetailResponse } from "../../api/apis/ApiMovie";
+import { SearchMovieResponse, MovieDetailResponse, MovieImageResponse } from "../../api/apis/ApiMovie";
 
 export class MovieState {
   query: String = ""
@@ -57,6 +57,8 @@ const actions: ActionTree<MovieState, RootState> = {
   async getMovie({ commit, rootState }, movieId: number) {
     const result: MovieDetailResponse = await rootState.api.movie.getMovie(String(movieId));
     const movie: DetailedMovie = DetailedMovie.fromJson(result);
+
+    const imageResult: MovieImageResponse = await rootState.api.movie.getMovieImage(String(movieId));
 
     commit("setSelectedMovie", movie);
   },

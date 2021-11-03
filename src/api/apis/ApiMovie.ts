@@ -3,12 +3,12 @@ import { ApiUrl } from "../api-url";
 
 export interface SearchMovieResponse {
   page: number;
-  results: MovieResponse[];
+  results: MovieJson[];
   total_pages: number;
 	total_results: number;
 }
 
-export interface MovieResponse {
+export interface MovieJson {
   adult: boolean;
   backdrop_path: String,
   genre_ids: number[];
@@ -23,28 +23,6 @@ export interface MovieResponse {
   video: boolean;
   vote_average: number;
   vote_count: number;
-}
-
-interface genre {
-  id: number;
-  name: string;
-}
-
-interface ProductionCompany {
-  name:string;
-  id: number;
-  logo_path?: string;
-  origin_country: string;
-}
-
-interface ProductionCountry {
-  iso_3166_1: string;
-  name: string;
-}
-
-interface SpokenLanguage {
-  iso_639_1: string;
-  name: string;
 }
 
 export interface MovieDetailResponse {
@@ -75,6 +53,55 @@ export interface MovieDetailResponse {
   vote_count: number;
 }
 
+interface genre {
+  id: number;
+  name: string;
+}
+
+interface ProductionCompany {
+  name:string;
+  id: number;
+  logo_path?: string;
+  origin_country: string;
+}
+
+interface ProductionCountry {
+  iso_3166_1: string;
+  name: string;
+}
+
+interface SpokenLanguage {
+  iso_639_1: string;
+  name: string;
+}
+
+export interface MovieImageResponse {
+  id: number;
+  backdrops: backdrop[];
+  posters: poster[];
+}
+
+interface backdrop {
+  aspect_ratio:number;
+  file_path:string;
+  height: number;
+  iso_639_1?: string;
+  vote_average: number;
+  vote_count: number;
+  width: number;
+}
+
+interface poster {
+  aspect_ratio: number;
+  file_path: string;
+  height: number;
+  iso_639_1?: string;
+  vote_average: number;
+  vote_count: number;
+  width: number;
+}
+
+
 export default class ApiMovie {
   constructor(private readonly httpClient: HttpClient) {}
 
@@ -86,5 +113,10 @@ export default class ApiMovie {
   // get detailed movie information
   public getMovie(id: string): Promise<MovieDetailResponse> {
     return this.httpClient.get<MovieDetailResponse>(ApiUrl.MOVIE_DETAIL(id));
+  }
+
+  // get movie image
+  public getMovieImage(id: string): Promise<MovieImageResponse> {
+    return this.httpClient.get<MovieImageResponse>(ApiUrl.MOVIE_IMAGE(id));
   }
 }

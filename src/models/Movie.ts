@@ -1,4 +1,4 @@
-import { MovieResponse, MovieDetailResponse } from "../api/apis/ApiMovie";
+import { MovieJson, MovieDetailResponse } from "../api/apis/ApiMovie";
 /**
  * Movieの検索結果を格納するクラス
  */
@@ -21,7 +21,7 @@ export class Movie {
     public readonly vote_count: number,
   ) {}
 
-  static fromJson(json: MovieResponse): Movie {
+  static fromJson(json: MovieJson): Movie {
     return new Movie(
         json["adult"],
         json["backdrop_path"],
