@@ -1,7 +1,6 @@
 import { MutationTree } from "vuex";
 import HttpClient from "../../api/HttpClient";
 import ApiMovie from "../../api/apis/ApiMovie";
-import { RootState } from "../../store/";
 
 export class ApiState {
   httpClient = new HttpClient();

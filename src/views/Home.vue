@@ -63,7 +63,7 @@ export default class Home extends Vue {
   }
 
   isFavorited(movie: Movie): boolean {
-    return this.favoriteMovies.includes(movie);
+    return this.favoriteMovies.filter(favo => favo.id == movie.id ).length != 0;
   }
 
   favorite(event: any, movie: Movie) {
