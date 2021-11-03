@@ -10,39 +10,47 @@
       検索結果がありません
     </div>
     <div v-else class="home__container">
+      <div v-if="!isFavoirteList" class="home__pager">
+        <button v-if="isPrevShown" @click="movePrev">Prev</button>
+        <span class="home__pageCount">{{ currentPage }}/{{ totalPages}}</span>
+        <button v-if="isNextShown" @click="moveNext">Next</button>
+      </div>
       <table class="home__table">
-        <thead>
-          <th>タイトル</th>
-          <th>言語</th>
-          <th>平均評価</th>
-          <th>評価数</th>
-          <th>公開日</th>
-          <th>お気に入り</th>
+        <thead class="home__tableHeader">
+          <th class="home__tableColumn">タイトル</th>
+          <th class="home__tableColumn">言語</th>
+          <th class="home__tableColumn">平均評価</th>
+          <th class="home__tableColumn">評価数</th>
+          <th class="home__tableColumn">公開日</th>
+          <th class="home__tableColumn">お気に入り</th>
         </thead>
         <tbody>
           <tr
             v-for="movie in displayMovies"
             :key="movie.id"
-            class="home__tableItem"
+            class="home__tableRow"
             @click="selectMovie(movie)"
           >
-            <td>{{ movie.title }}</td>
-            <td>{{ movie.original_language }}</td>
-            <td>{{ movie.vote_average }}</td>
-            <td>{{ movie.vote_count }}</td>
-            <td>{{ movie.release_date }}</td>
-            <td @click="favorite($event, movie)">
+            <td class="home__tableColumnTitle home__tableColumn">{{ movie.original_title }}</td>
+            <td class="home__tableColumn">{{ movie.original_language }}</td>
+            <td 
+              class="home__tableColumn"
+              :class="{
+                'home__tableColumnAvarage--low': isVoteAverageLow(movie),
+                'home__tableColumnAvarage--high': isVoteAverageHigh(movie),
+              }"
+            >
+              {{ voteAverageText(movie) }}
+            </td>
+            <td class="home__tableColumn">{{ voteCountText(movie) }}</td>
+            <td class="home__tableColumn">{{ releaseDateText(movie) }}</td>
+            <td class="home__tableColumn" @click="clickFavorite($event, movie)">
               <fa class="home__icon" v-if="isFavorited(movie)" icon="heart" />
               <fa class="home__icon" v-else :icon="['far', 'heart']" />
             </td>
           </tr>
         </tbody>
       </table>
-      <div v-if="!isFavoirteList" class="home__pager">
-        <button v-if="showPrev" @click="movePrev">Prev</button>
-        <span class="home__page">{{ currentPage }}/{{ totalPages}}</span>
-        <button v-if="showNext" @click="moveNext">Next</button>
-      </div>
     </div>
   </div>
 </template>
@@ -62,11 +70,7 @@ export default class Home extends Vue {
     this.store.dispatch("movie/getMovie", movie.id);
   }
 
-  isFavorited(movie: Movie): boolean {
-    return this.favoriteMovies.filter(favo => favo.id == movie.id ).length != 0;
-  }
-
-  favorite(event: any, movie: Movie) {
+  clickFavorite(event: any, movie: Movie) {
     if (this.isFavorited(movie)) {
       this.store.commit("favorite/removeFavorite", movie);
     } else {
@@ -93,6 +97,30 @@ export default class Home extends Vue {
     this.isFavoirteList = !this.isFavoirteList;
   }
 
+  isFavorited(movie: Movie): boolean {
+    return this.favoriteMovies.filter(favo => favo.id == movie.id ).length != 0;
+  }
+
+  voteAverageText(movie: Movie): string {
+    return movie.vote_average == 0 ? "-" : String(movie.vote_average); 
+  }
+
+  isVoteAverageLow(movie: Movie): boolean {
+    return movie.vote_average <= 3;
+  }
+
+  isVoteAverageHigh(movie: Movie): boolean {
+    return movie.vote_average > 8;
+  }
+
+  voteCountText(movie: Movie): string {
+    return movie.vote_count == 0 ? "-" : String(movie.vote_count); 
+  }
+
+  releaseDateText(movie: Movie): string {
+    return movie.release_date == "" ? "-" : String(movie.release_date); 
+  }
+
   get displayMovies(): Movie[] {
     if (this.isFavoirteList) {
       return this.favoriteMovies;
@@ -117,11 +145,11 @@ export default class Home extends Vue {
     return this.totalPages == 0 && this.currentPage == 1 && !this.isFavoirteList;
   }
 
-  get showPrev(): boolean {
+  get isPrevShown(): boolean {
     return this.currentPage != 1;
   }
 
-  get showNext(): boolean {
+  get isNextShown(): boolean {
     return this.currentPage != this.totalPages;
   }
 
@@ -151,13 +179,38 @@ export default class Home extends Vue {
 
 .home__table {
   margin: 0 auto;
+  border: 1px solid rgba(150, 200, 50, 1);
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.home__tableColumn {
+  padding: 2px 10px 2px 10px;
+}
+
+.home__tableColumnAvarage--low {
+  color: blue;
+}
+
+.home__tableColumnAvarage--high {
+  color: rgb(247, 3, 186);
+}
+
+.home__tableColumnTitle {
+  text-align: left;
+  font-weight: bold;
 }
 
 .home__icon {
   color: pink;
 }
 
-.home__page {
+.home__pager {
+  margin-top:10px;
+  margin-bottom:10px;
+}
+
+.home__pageCount {
   margin-left: 10px;
   margin-right: 10px;
 }

@@ -2,7 +2,7 @@
   <div class="header">
     <div class="header__left">
       <img class="header__logo" alt="Vue logo" src="../assets/logo.png">
-      <div class="header__title">Vue-App</div>
+      <div class="header__title">MovieSearch</div>
     </div>
 
     <div class="header__center">
