@@ -1,6 +1,7 @@
 <template>
-  <div class="modal" @click="$emit('click-close')">
+  <div class="modal">
     <div class="modal__container">
+      <div class="modal__closeButton" @click="$emit('click-close')">×</div>
       <div class="modal__title">
         <div class="modal__titleTranselated">{{ movie.title }}</div>
         <div class="modal__titleOriginal">({{ movie.original_title }})</div>
@@ -129,10 +130,26 @@ export default class Modal extends Vue {
   max-width: 1000px;
   background-color: white;
   padding: 20px;
+  position: relative;
+}
+
+.modal__closeButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: lightgray;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  font-size: 30px;
+  line-height: 30px;
+  cursor: pointer;
 }
 
 .modal__title {
   margin-bottom: 10px;
+  margin-right: 20px;
+  margin-left: 20px;
 }
 
 .modal__titleTranselated {
@@ -151,11 +168,12 @@ export default class Modal extends Vue {
 }
 
 .modal__images {
-  margin-right: 10px;
+  margin-right: 20px;
 }
 
 .modal__table {
   margin-top: 10px;
+  width: 100%;
 }
 
 .modal__rowTitle {
