@@ -17,7 +17,7 @@ export interface MovieJson {
   original_title: String;
   overview: String;
   popularity: number;
-  poster_path: number;
+  poster_path: string;
   release_date: String;
   title: String;
   video: boolean;

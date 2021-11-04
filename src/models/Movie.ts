@@ -3,6 +3,8 @@ import { MovieJson, MovieDetailResponse } from "../api/apis/ApiMovie";
  * Movieの検索結果を格納するクラス
  */
 
+ const baseUrl = "https://image.tmdb.org/t/p/w500";
+
 export class Movie {
   constructor(
     public readonly adult: boolean,
@@ -13,13 +15,17 @@ export class Movie {
     public readonly original_title: String,
     public readonly overview: String,
     public readonly popularity: number,
-    public readonly poster_path: number,
+    public readonly poster_path: string,
     public readonly release_date: String,
     public readonly title: String,
     public readonly video: boolean,
     public readonly vote_average: number,
     public readonly vote_count: number,
   ) {}
+
+  backdropUrl(): string {
+    return baseUrl + this.backdrop_path;
+  }
 
   static fromJson(json: MovieJson): Movie {
     return new Movie(
@@ -70,6 +76,10 @@ export class DetailedMovie {
     public readonly tagline?: string,
     
   ) {}
+
+  posterUrl(): string {
+    return baseUrl + this.poster_path;
+  }
 
   static fromJson(json: MovieDetailResponse): DetailedMovie {
     return new DetailedMovie(

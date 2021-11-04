@@ -9,7 +9,7 @@
 
       <div class="modal__body">
         <div class="modal__images">
-          <img width=300 :src="posterUrl">
+          <img width=300 :src="movie.posterUrl()">
         </div>
 
         <div class="modal__descriptions">
@@ -101,11 +101,6 @@ import { DetailedMovie } from "../models/Movie";
 })
 export default class Modal extends Vue {
   movie!: DetailedMovie
-  baseUrl = "https://image.tmdb.org/t/p/w500";
-
-  get posterUrl(): string {
-    return this.baseUrl + this.movie.poster_path;
-  }
 }
 </script>
 

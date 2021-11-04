@@ -15,42 +15,40 @@
         <span class="home__pageCount">{{ currentPage }}/{{ totalPages}}</span>
         <button v-if="isNextShown" @click="moveNext">Next</button>
       </div>
-      <table class="home__table">
-        <thead class="home__tableHeader">
-          <th class="home__tableColumn">タイトル</th>
-          <th class="home__tableColumn">言語</th>
-          <th class="home__tableColumn">平均評価</th>
-          <th class="home__tableColumn">評価数</th>
-          <th class="home__tableColumn">公開日</th>
-          <th class="home__tableColumn">お気に入り</th>
-        </thead>
-        <tbody>
-          <tr
-            v-for="movie in displayMovies"
-            :key="movie.id"
-            class="home__tableRow"
-            @click="selectMovie(movie)"
-          >
-            <td class="home__tableColumnTitle home__tableColumn">{{ movie.original_title }}</td>
-            <td class="home__tableColumn">{{ movie.original_language }}</td>
-            <td 
-              class="home__tableColumn"
-              :class="{
-                'home__tableColumnAvarage--low': isVoteAverageLow(movie),
-                'home__tableColumnAvarage--high': isVoteAverageHigh(movie),
-              }"
-            >
-              {{ voteAverageText(movie) }}
-            </td>
-            <td class="home__tableColumn">{{ voteCountText(movie) }}</td>
-            <td class="home__tableColumn">{{ releaseDateText(movie) }}</td>
-            <td class="home__tableColumn" @click="clickFavorite($event, movie)">
-              <fa class="home__icon" v-if="isFavorited(movie)" icon="heart" />
-              <fa class="home__icon" v-else :icon="['far', 'heart']" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+
+      <div class="home__movieCards">
+        <div
+          v-for="movie in displayMovies"
+          :key="movie.id"
+          class="home__movieCard"
+          @click="selectMovie(movie)"
+        >
+          <div class="home__image">
+            <img v-if="hasBackdrop(movie)" width=210 :src="movie.backdropUrl()">
+            <img v-else width=210 src="../assets/noimage.png">
+          </div>
+
+          <div class="home__description">
+            <div class="home__movieTitle">{{ movie.original_title }}</div>
+            <div class="home__movieText">
+              <div>
+                {{ voteAverageText(movie) }} ({{ voteCountText(movie) }}件)
+              </div>
+              <div>{{ releaseDateText(movie) }}</div>
+              <div @click="clickFavorite($event, movie)">
+                <fa class="home__icon" v-if="isFavorited(movie)" icon="heart" />
+                <fa class="home__icon" v-else :icon="['far', 'heart']" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="!isFavoirteList" class="home__pager">
+        <button v-if="isPrevShown" @click="movePrev">Prev</button>
+        <span class="home__pageCount">{{ currentPage }}/{{ totalPages}}</span>
+        <button v-if="isNextShown" @click="moveNext">Next</button>
+      </div>
     </div>
   </div>
 </template>
@@ -121,6 +119,10 @@ export default class Home extends Vue {
     return movie.release_date == "" ? "-" : String(movie.release_date); 
   }
 
+  hasBackdrop(movie: Movie) {
+    return movie.backdrop_path !== "" && movie.backdrop_path !== null;
+  }
+
   get displayMovies(): Movie[] {
     if (this.isFavoirteList) {
       return this.favoriteMovies;
@@ -131,9 +133,9 @@ export default class Home extends Vue {
 
   get currentTitle(): string {
     if (this.isFavoirteList) {
-      return "検索結果を見る";
+      return "See Results";
     } else {
-      return "お気に入り一覧を見る";
+      return "See Favorites";
     }
   }
 
@@ -177,28 +179,40 @@ export default class Home extends Vue {
   margin-bottom: 20px;
 }
 
-.home__table {
+.home__movieCards {
   margin: 0 auto;
+  width: 928px;
+  display: flex;
+  flex-wrap : wrap;
+}
+
+.home__movieCard {
+  margin: 10px;
+  width: 210px;
+  height: 200px;
   border: 1px solid rgba(150, 200, 50, 1);
   border-radius: 20px;
-  padding: 10px;
+  overflow: hidden;
+  cursor: pointer;
 }
 
-.home__tableColumn {
-  padding: 2px 10px 2px 10px;
+.home__description {
+  padding: 0 10px 10px 10px;
 }
 
-.home__tableColumnAvarage--low {
-  color: blue;
+.home__movieTitle {
+  /** 2行以上で省略 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
-.home__tableColumnAvarage--high {
-  color: rgb(247, 3, 186);
-}
-
-.home__tableColumnTitle {
-  text-align: left;
-  font-weight: bold;
+.home__movieText {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .home__icon {
